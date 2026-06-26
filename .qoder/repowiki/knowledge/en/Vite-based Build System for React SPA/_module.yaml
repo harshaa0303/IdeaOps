@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: build_system
+title: Vite-based Build System for React SPA
+scope: []
+source_files:
+    - package.json
+    - vite.config.js
+    - postcss.config.mjs
+    - tailwind.config.js
+    - index.html
+depends_on: []
+related_to: []

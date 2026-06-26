@@ -1,17 +1,33 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Lightbulb, Users, Rocket, Bell, ArrowRight, Clock, CircleCheck as CheckCircle, TrendingUp, Award, Target } from 'lucide-react';
 import { Button, Badge } from '../components/ui';
-import { ideas, users, notifications } from '../data/ideas';
+import { fetchCurrentUser } from '../lib/supabase';
 
 export default function DashboardPage() {
-  const user = users[0]; // Mock current user
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const userData = await fetchCurrentUser();
+        setUser(userData);
+      } catch (err) {
+        console.error('Failed to load user:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
 
   const stats = [
-    { label: 'Ideas Submitted', value: user.ideasSubmitted, icon: Lightbulb, color: 'primary' },
-    { label: 'Projects Joined', value: user.projectsJoined, icon: Users, color: 'accent' },
-    { label: 'MVPs Built', value: user.mvpBuilt, icon: Rocket, color: 'success' },
-    { label: 'Reputation', value: user.reputation, icon: Award, color: 'warning' },
+    { label: 'Ideas Submitted', value: user?.ideasSubmitted || 0, icon: Lightbulb, color: 'primary' },
+    { label: 'Projects Joined', value: user?.projectsJoined || 0, icon: Users, color: 'accent' },
+    { label: 'MVPs Built', value: user?.mvpBuilt || 0, icon: Rocket, color: 'success' },
+    { label: 'Reputation', value: user?.reputation || 0, icon: Award, color: 'warning' },
   ];
 
   const projectProgress = [
@@ -32,6 +48,17 @@ export default function DashboardPage() {
     { task: 'Team sync meeting', due: 'In 2 days', priority: 'low' },
   ];
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-600 dark:text-slate-400">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -43,7 +70,7 @@ export default function DashboardPage() {
         >
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-              Welcome back, {user.name.split(' ')[0]}!
+              Welcome back, {user?.name?.split(' ')[0] || 'Builder'}!
             </h1>
             <p className="text-slate-600 dark:text-slate-400 mt-1">
               Here's what's happening with your projects

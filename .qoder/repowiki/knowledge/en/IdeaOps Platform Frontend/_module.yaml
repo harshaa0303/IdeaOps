@@ -1,0 +1,53 @@
+schema_version: 1
+module_path: ""
+title: IdeaOps Platform Frontend
+scope:
+    - src/
+    - index.html
+    - package.json
+    - vite.config.js
+    - tailwind.config.js
+    - postcss.config.mjs
+    - package-lock.json
+    - src\App.jsx
+    - src\assets\hero.png
+    - src\assets\react.svg
+    - src\assets\vite.svg
+    - src\components\features\BuilderCard.jsx
+    - src\components\features\CommentSection.jsx
+    - src\components\features\IdeaCard.jsx
+    - src\components\features\NotificationCard.jsx
+    - src\components\features\StatsCard.jsx
+    - src\components\features\index.js
+    - src\components\layout\Footer.jsx
+    - src\components\layout\Navbar.jsx
+    - src\components\layout\index.js
+    - src\components\ui\Badge.jsx
+    - src\components\ui\Button.jsx
+    - src\components\ui\Input.jsx
+    - src\components\ui\Modal.jsx
+    - src\components\ui\SearchBar.jsx
+    - src\components\ui\Select.jsx
+    - src\components\ui\Textarea.jsx
+    - src\components\ui\index.js
+    - src\context\ThemeContext.jsx
+    - src\index.css
+    - src\lib\supabase.js
+    - src\main.jsx
+    - src\pages\BuilderPage.jsx
+    - src\pages\CommunityPage.jsx
+    - src\pages\DashboardPage.jsx
+    - src\pages\ExplorePage.jsx
+    - src\pages\IdeaDetailsPage.jsx
+    - src\pages\LandingPage.jsx
+    - src\pages\NotificationsPage.jsx
+    - src\pages\ProfilePage.jsx
+    - src\pages\SettingsPage.jsx
+    - src\pages\SubmitIdeaPage.jsx
+    - src\pages\index.js
+    - src\public\favicon.svg
+    - src\public\icons.svg
+    - src\supabaseClient.js
+source_files: []
+depends_on: []
+related_to: []

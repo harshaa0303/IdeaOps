@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: configuration_system
+title: Hardcoded Configuration and Static UI Constants
+scope: []
+source_files:
+    - src/supabaseClient.js
+    - src/lib/supabase.js
+    - vite.config.js
+    - tailwind.config.js
+depends_on: []
+related_to: []

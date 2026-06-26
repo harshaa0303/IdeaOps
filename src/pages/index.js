@@ -8,3 +8,5 @@ export { default as BuilderPage } from './BuilderPage';
 export { default as CommunityPage } from './CommunityPage';
 export { default as NotificationsPage } from './NotificationsPage';
 export { default as SettingsPage } from './SettingsPage';
+export { default as LoginPage } from './LoginPage';
+export { default as SignupPage } from './SignupPage';

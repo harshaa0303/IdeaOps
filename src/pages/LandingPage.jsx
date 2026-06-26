@@ -1,9 +1,10 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lightbulb, Users, Rocket, CircleCheck as CheckCircle, ArrowRight, Star, Trophy, Zap, Target, Clock, Heart, Code, Palette, TrendingUp, Brain, Cloud, DollarSign, GraduationCap, Smartphone, Globe, ShoppingCart } from 'lucide-react';
 import { Button } from '../components/ui';
 import { IdeaCard, StatsCard, BuilderCard } from '../components/features';
-import { ideas, communityStats, successStories, topBuilders } from '../data/ideas';
+import { fetchIdeas, fetchUsers, fetchSuccessStories, fetchCommunityStats } from '../lib/supabase';
 
 const steps = [
   {
@@ -36,13 +37,6 @@ const steps = [
     description: 'Ship your product and get feedback from early adopters.',
     icon: Rocket,
   },
-];
-
-const stats = [
-  { value: communityStats.ideasSubmitted, label: 'Ideas Submitted', icon: Lightbulb },
-  { value: communityStats.builders, label: 'Builders', icon: Users },
-  { value: communityStats.mvpsBuilt, label: 'MVPs Built', icon: Code },
-  { value: communityStats.productsLaunched, label: 'Products Launched', icon: Rocket },
 ];
 
 const benefits = [
@@ -80,7 +74,39 @@ const categoryIcons = {
 };
 
 export default function LandingPage() {
+  const [ideas, setIdeas] = useState([]);
+  const [communityStats, setCommunityStats] = useState({ ideasSubmitted: 0, builders: 0, mvpsBuilt: 0, productsLaunched: 0 });
+  const [successStories, setSuccessStories] = useState([]);
+  const [topBuilders, setTopBuilders] = useState([]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [ideasData, usersData, storiesData, statsData] = await Promise.all([
+          fetchIdeas(),
+          fetchUsers(),
+          fetchSuccessStories(),
+          fetchCommunityStats(),
+        ]);
+        setIdeas(ideasData);
+        setTopBuilders(usersData.slice(0, 6).sort((a, b) => b.reputation - a.reputation));
+        setSuccessStories(storiesData);
+        setCommunityStats(statsData);
+      } catch (err) {
+        console.error('Failed to load landing page data:', err);
+      }
+    };
+    load();
+  }, []);
+
   const featuredIdeas = ideas.slice(0, 6);
+
+  const stats = [
+    { value: communityStats.ideasSubmitted, label: 'Ideas Submitted', icon: Lightbulb },
+    { value: communityStats.builders, label: 'Builders', icon: Users },
+    { value: communityStats.mvpsBuilt, label: 'MVPs Built', icon: Code },
+    { value: communityStats.productsLaunched, label: 'Products Launched', icon: Rocket },
+  ];
 
   return (
     <div className="min-h-screen">

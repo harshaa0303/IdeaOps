@@ -1,0 +1,4 @@
+- Components use barrel exports (`index.js`) in `ui`, `features`, `layout`, and `pages` directories to simplify import paths.
+- Data fetching is centralized in `src/lib/supabase.js`, which exports both async CRUD functions and static configuration arrays (categories, statuses).
+- UI primitives in `src/components/ui` accept `variant` and `size` props to control styling, using Tailwind utility classes for state-specific appearances.
+- Pages consume data from `src/lib/supabase.js` and pass domain objects down to feature components (e.g., `IdeaCard`) as props.

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { Button, Badge } from '../components/ui';
 import { BuilderCard, IdeaCard } from '../components/features';
-import { ideas, users, trendingIdeas, topBuilders } from '../data/ideas';
+import { fetchIdeas, fetchUsers } from '../lib/supabase';
 
 const challenges = [
   {
@@ -39,6 +39,24 @@ const challenges = [
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState('trending');
+  const [trendingIdeas, setTrendingIdeas] = useState([]);
+  const [topBuilders, setTopBuilders] = useState([]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [ideasData, usersData] = await Promise.all([
+          fetchIdeas(),
+          fetchUsers(),
+        ]);
+        setTrendingIdeas(ideasData.slice(0, 5).sort((a, b) => b.votes - a.votes));
+        setTopBuilders(usersData.slice(0, 6).sort((a, b) => b.reputation - a.reputation));
+      } catch (err) {
+        console.error('Failed to load community data:', err);
+      }
+    };
+    load();
+  }, []);
 
   const leaderboard = topBuilders
     .sort((a, b) => b.reputation - a.reputation)

@@ -1,0 +1,131 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: en-US
+branch: main
+nodes_managed: true
+exported_at: "2026-06-25T17:08:07Z"
+modules:
+    "":
+        dir_name: IdeaOps Platform Frontend
+        title: IdeaOps Platform Frontend
+        scope:
+            - src/
+            - index.html
+            - package.json
+            - vite.config.js
+            - tailwind.config.js
+            - postcss.config.mjs
+            - package-lock.json
+            - src\App.jsx
+            - src\assets\hero.png
+            - src\assets\react.svg
+            - src\assets\vite.svg
+            - src\components\features\BuilderCard.jsx
+            - src\components\features\CommentSection.jsx
+            - src\components\features\IdeaCard.jsx
+            - src\components\features\NotificationCard.jsx
+            - src\components\features\StatsCard.jsx
+            - src\components\features\index.js
+            - src\components\layout\Footer.jsx
+            - src\components\layout\Navbar.jsx
+            - src\components\layout\index.js
+            - src\components\ui\Badge.jsx
+            - src\components\ui\Button.jsx
+            - src\components\ui\Input.jsx
+            - src\components\ui\Modal.jsx
+            - src\components\ui\SearchBar.jsx
+            - src\components\ui\Select.jsx
+            - src\components\ui\Textarea.jsx
+            - src\components\ui\index.js
+            - src\context\ThemeContext.jsx
+            - src\index.css
+            - src\lib\supabase.js
+            - src\main.jsx
+            - src\pages\BuilderPage.jsx
+            - src\pages\CommunityPage.jsx
+            - src\pages\DashboardPage.jsx
+            - src\pages\ExplorePage.jsx
+            - src\pages\IdeaDetailsPage.jsx
+            - src\pages\LandingPage.jsx
+            - src\pages\NotificationsPage.jsx
+            - src\pages\ProfilePage.jsx
+            - src\pages\SettingsPage.jsx
+            - src\pages\SubmitIdeaPage.jsx
+            - src\pages\index.js
+            - src\public\favicon.svg
+            - src\public\icons.svg
+            - src\supabaseClient.js
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    build_system:
+        dir_name: Vite-based Build System for React SPA
+        title: Vite-based Build System for React SPA
+        scope: []
+        source_files:
+            - package.json
+            - vite.config.js
+            - postcss.config.mjs
+            - tailwind.config.js
+            - index.html
+        children: []
+        depends_on: []
+        related_to: []
+    configuration_system:
+        dir_name: Hardcoded Configuration and Static UI Constants
+        title: Hardcoded Configuration and Static UI Constants
+        scope: []
+        source_files:
+            - src/supabaseClient.js
+            - src/lib/supabase.js
+            - vite.config.js
+            - tailwind.config.js
+        children: []
+        depends_on: []
+        related_to: []
+    dependency_management:
+        dir_name: npm and Vite-based Dependency Management
+        title: npm and Vite-based Dependency Management
+        scope: []
+        source_files:
+            - package.json
+            - package-lock.json
+            - vite.config.js
+            - postcss.config.mjs
+            - tailwind.config.js
+        children: []
+        depends_on: []
+        related_to: []
+    error_handling:
+        dir_name: Error Handling — Ad-hoc Try_Catch with Console Logging
+        title: Error Handling — Ad-hoc Try/Catch with Console Logging
+        scope: []
+        source_files:
+            - src/lib/supabase.js
+            - src/pages/ExplorePage.jsx
+            - src/pages/IdeaDetailsPage.jsx
+            - src/pages/SubmitIdeaPage.jsx
+            - src/components/features/CommentSection.jsx
+            - src/components/ui/Input.jsx
+            - src/components/ui/Textarea.jsx
+            - src/App.jsx
+        children: []
+        depends_on: []
+        related_to: []
+    frontend_style:
+        dir_name: Tailwind CSS v4 with Custom Design Tokens and Dark Mode
+        title: Tailwind CSS v4 with Custom Design Tokens and Dark Mode
+        scope: []
+        source_files:
+            - tailwind.config.js
+            - src/index.css
+            - postcss.config.mjs
+            - src/context/ThemeContext.jsx
+            - src/components/ui/Button.jsx
+            - src/components/ui/Badge.jsx
+            - src/components/layout/Navbar.jsx
+            - package.json
+        children: []
+        depends_on: []
+        related_to: []

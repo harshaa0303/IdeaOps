@@ -1,0 +1,6 @@
+- Entry point: `src/main.jsx` renders `App` within `StrictMode`.
+- Routing: `react-router-dom` in `src/App.jsx` defines public and protected routes (e.g., `/explore`, `/dashboard`, `/idea/:id`).
+- State Management: React Context (`src/context/ThemeContext.jsx`) handles global theme state; local component state manages UI interactions.
+- Data Layer: `src/lib/supabase.js` acts as the sole data access layer, encapsulating all Supabase client calls for ideas, users, and notifications.
+- Component Architecture: Strictly layered into `src/components/ui` (atomic primitives like Button, Input), `src/components/layout` (structural components like Navbar, Footer), and `src/components/features` (domain-specific cards like IdeaCard).
+- Styling: Tailwind CSS v4 with PostCSS, utilizing a dark-mode strategy via class toggling on the document element.

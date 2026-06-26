@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { MapPin, Star, Briefcase, Calendar, FileText, FolderOpen, Bookmark, Activity, Award, Users, Rocket, Settings, CreditCard as Edit2 } from 'lucide-react';
 import { Button, Badge } from '../components/ui';
 import { IdeaCard } from '../components/features';
-import { users, ideas } from '../data/ideas';
+import { fetchCurrentUser, fetchIdeas, fetchIdeasByOwner } from '../lib/supabase';
 
 const tabs = [
   { id: 'ideas', label: 'My Ideas', icon: Lightbulb },
@@ -17,8 +17,54 @@ import { Lightbulb } from 'lucide-react';
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('ideas');
-  const user = users[0]; // Mock current user
-  const userIdeas = ideas.filter((idea) => idea.ownerId === user.id);
+  const [user, setUser] = useState(null);
+  const [userIdeas, setUserIdeas] = useState([]);
+  const [allIdeas, setAllIdeas] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const userData = await fetchCurrentUser();
+        setUser(userData);
+
+        if (userData) {
+          const [ownedIdeas, ideasData] = await Promise.all([
+            fetchIdeasByOwner(userData.id),
+            fetchIdeas(),
+          ]);
+          setUserIdeas(ownedIdeas);
+          setAllIdeas(ideasData);
+        }
+      } catch (err) {
+        console.error('Failed to load profile:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-600 dark:text-slate-400">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-20 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Please sign in</h1>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-20">
@@ -154,10 +200,10 @@ export default function ProfilePage() {
           {activeTab === 'ideas' && userIdeas.map((idea, index) => (
             <IdeaCard key={idea.id} idea={idea} index={index} />
           ))}
-          {activeTab === 'projects' && ideas.slice(0, 6).map((idea, index) => (
+          {activeTab === 'projects' && allIdeas.slice(0, 6).map((idea, index) => (
             <IdeaCard key={idea.id} idea={idea} index={index} />
           ))}
-          {activeTab === 'saved' && ideas.slice(6, 12).map((idea, index) => (
+          {activeTab === 'saved' && allIdeas.slice(6, 12).map((idea, index) => (
             <IdeaCard key={idea.id} idea={idea} index={index} />
           ))}
           {activeTab === 'activity' && (

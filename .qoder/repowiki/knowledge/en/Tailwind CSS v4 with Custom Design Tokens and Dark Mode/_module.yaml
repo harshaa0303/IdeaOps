@@ -1,0 +1,15 @@
+schema_version: 1
+module_path: frontend_style
+title: Tailwind CSS v4 with Custom Design Tokens and Dark Mode
+scope: []
+source_files:
+    - tailwind.config.js
+    - src/index.css
+    - postcss.config.mjs
+    - src/context/ThemeContext.jsx
+    - src/components/ui/Button.jsx
+    - src/components/ui/Badge.jsx
+    - src/components/layout/Navbar.jsx
+    - package.json
+depends_on: []
+related_to: []

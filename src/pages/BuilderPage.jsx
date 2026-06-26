@@ -1,14 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Star, Briefcase, Calendar, Award, Users, Rocket, CircleCheck as CheckCircle, MessageCircle, UserPlus, Link as LinkIcon } from 'lucide-react';
 import { Button, Badge } from '../components/ui';
-import { users, ideas } from '../data/ideas';
+import { fetchUserById, fetchIdeas } from '../lib/supabase';
 
 export default function BuilderPage() {
   const { id } = useParams();
-  const builder = users.find((u) => u.id === parseInt(id));
+  const [builder, setBuilder] = useState(null);
+  const [ideas, setIdeas] = useState([]);
   const [following, setFollowing] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [builderData, ideasData] = await Promise.all([
+          fetchUserById(parseInt(id)),
+          fetchIdeas(),
+        ]);
+        setBuilder(builderData);
+        setIdeas(ideasData);
+      } catch (err) {
+        console.error('Failed to load builder:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-600 dark:text-slate-400">Loading builder...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!builder) {
     return (

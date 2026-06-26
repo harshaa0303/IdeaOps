@@ -1,19 +1,55 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowUp, Users, Clock, Share2, Bookmark, MessageCircle, Calendar, Globe, Target, TrendingUp, Award, Zap, Brain, DollarSign, CircleCheck as CheckCircle, User, Send } from 'lucide-react';
 import { Button, Badge } from '../components/ui';
 import { CommentSection } from '../components/features';
-import { ideas, categories, statuses, difficultyLevels, users } from '../data/ideas';
+import { fetchIdeaById, fetchUserById, fetchUsers, updateIdeaVotes, categories, statuses, difficultyLevels } from '../lib/supabase';
 
 export default function IdeaDetailsPage() {
   const { id } = useParams();
-  const idea = ideas.find((i) => i.id === parseInt(id));
-  const [votes, setVotes] = useState(idea?.votes || 0);
+  const [idea, setIdea] = useState(null);
+  const [owner, setOwner] = useState(null);
+  const [applicants, setApplicants] = useState([]);
+  const [votes, setVotes] = useState(0);
   const [saved, setSaved] = useState(false);
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [applyRole, setApplyRole] = useState('');
   const [applyMessage, setApplyMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const ideaData = await fetchIdeaById(parseInt(id));
+        setIdea(ideaData);
+        setVotes(ideaData.votes || 0);
+
+        const [ownerData, usersData] = await Promise.all([
+          fetchUserById(ideaData.ownerId),
+          fetchUsers(),
+        ]);
+        setOwner(ownerData);
+        setApplicants(usersData.slice(0, 3));
+      } catch (err) {
+        console.error('Failed to load idea:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-600 dark:text-slate-400">Loading idea...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!idea) {
     return (
@@ -33,7 +69,6 @@ export default function IdeaDetailsPage() {
   const category = categories.find((c) => c.id === idea.category);
   const status = statuses.find((s) => s.id === idea.status);
   const difficulty = difficultyLevels.find((d) => d.id === idea.difficulty);
-  const owner = users.find((u) => u.id === idea.ownerId);
 
   const statusColors = {
     open: 'info',
@@ -55,7 +90,16 @@ export default function IdeaDetailsPage() {
     execution: 90,
   };
 
-  const handleVote = () => setVotes(votes + 1);
+  const handleVote = async () => {
+    const newVotes = votes + 1;
+    setVotes(newVotes);
+    try {
+      await updateIdeaVotes(idea.id, newVotes);
+    } catch (err) {
+      console.error('Failed to update votes:', err);
+      setVotes(newVotes - 1);
+    }
+  };
   const handleSave = () => setSaved(!saved);
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -381,7 +425,7 @@ export default function IdeaDetailsPage() {
                 APPLICANTS ({idea.applicants})
               </h3>
               <div className="space-y-3">
-                {users.slice(0, 3).map((user) => (
+                {applicants.slice(0, 3).map((user) => (
                   <Link
                     key={user.id}
                     to={`/builder/${user.id}`}

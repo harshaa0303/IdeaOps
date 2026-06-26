@@ -1,0 +1,1 @@
+React 19 with Vite 8 build tooling. Uses Supabase JS Client v2 for backend services (Auth, DB). Styling via Tailwind CSS v4 and Framer Motion for animations. Icons provided by Lucide React.

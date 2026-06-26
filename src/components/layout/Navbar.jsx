@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Sun, Moon, Bell, Lightbulb, Compass, CirclePlus as PlusCircle, LayoutDashboard, User, Settings } from 'lucide-react';
+import { Menu, X, Sun, Moon, Bell, Lightbulb, Compass, CirclePlus as PlusCircle, LayoutDashboard, User, Settings, LogOut } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui';
 
 const navLinks = [
@@ -16,6 +17,7 @@ const navLinks = [
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { darkMode, toggleDarkMode } = useTheme();
+  const { user, profile, signOut } = useAuth();
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
@@ -76,11 +78,36 @@ export default function Navbar() {
                 </button>
               </Link>
 
-              <Link to="/profile" className="hidden sm:block">
-                <Button variant="primary" size="sm">
-                  Profile
-                </Button>
-              </Link>
+              {user ? (
+                <div className="hidden sm:flex items-center gap-2">
+                  <Link to="/profile">
+                    {profile?.avatar ? (
+                      <img src={profile.avatar} alt={profile.name} className="w-8 h-8 rounded-full object-cover border-2 border-primary-200" />
+                    ) : (
+                      <Button variant="primary" size="sm">
+                        <User className="w-4 h-4" />
+                        Profile
+                      </Button>
+                    )}
+                  </Link>
+                  <button
+                    onClick={signOut}
+                    className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    title="Sign Out"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </button>
+                </div>
+              ) : (
+                <div className="hidden sm:flex items-center gap-2">
+                  <Link to="/login">
+                    <Button variant="ghost" size="sm">Login</Button>
+                  </Link>
+                  <Link to="/signup">
+                    <Button variant="primary" size="sm">Sign Up</Button>
+                  </Link>
+                </div>
+              )}
 
               {/* Mobile menu button */}
               <button
@@ -135,15 +162,35 @@ export default function Navbar() {
                     <Settings className="w-5 h-5" />
                     Settings
                   </Link>
-                  <Link
-                    to="/profile"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block mt-2"
-                  >
-                    <Button variant="primary" className="w-full">
-                      View Profile
-                    </Button>
-                  </Link>
+                  {user ? (
+                    <>
+                      <Link
+                        to="/profile"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block mt-2"
+                      >
+                        <Button variant="primary" className="w-full">
+                          View Profile
+                        </Button>
+                      </Link>
+                      <button
+                        onClick={() => { signOut(); setMobileMenuOpen(false); }}
+                        className="w-full mt-2 flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10"
+                      >
+                        <LogOut className="w-5 h-5" />
+                        Sign Out
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="block mt-2">
+                        <Button variant="ghost" className="w-full">Login</Button>
+                      </Link>
+                      <Link to="/signup" onClick={() => setMobileMenuOpen(false)} className="block mt-2">
+                        <Button variant="primary" className="w-full">Sign Up</Button>
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             </motion.div>

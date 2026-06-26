@@ -1,13 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Bell, CheckCheck, Settings, ListFilter as Filter } from 'lucide-react';
 import { Button } from '../components/ui';
 import { NotificationCard } from '../components/features';
-import { notifications } from '../data/ideas';
+import { fetchNotifications, markNotificationsRead } from '../lib/supabase';
 
 export default function NotificationsPage() {
-  const [notificationList, setNotificationList] = useState(notifications);
+  const [notificationList, setNotificationList] = useState([]);
   const [filter, setFilter] = useState('all');
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await fetchNotifications();
+        setNotificationList(data);
+      } catch (err) {
+        console.error('Failed to load notifications:', err);
+      }
+    };
+    load();
+  }, []);
 
   const unreadCount = notificationList.filter((n) => !n.read).length;
 
@@ -18,10 +30,15 @@ export default function NotificationsPage() {
       ? notificationList.filter((n) => !n.read)
       : notificationList.filter((n) => n.type === filter);
 
-  const markAllRead = () => {
-    setNotificationList(
-      notificationList.map((n) => ({ ...n, read: true }))
-    );
+  const markAllRead = async () => {
+    try {
+      await markNotificationsRead();
+      setNotificationList(
+        notificationList.map((n) => ({ ...n, read: true }))
+      );
+    } catch (err) {
+      console.error('Failed to mark notifications as read:', err);
+    }
   };
 
   return (

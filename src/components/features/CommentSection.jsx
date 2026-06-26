@@ -1,19 +1,30 @@
 import { motion } from 'framer-motion';
 import { Send, Heart, MoveHorizontal as MoreHorizontal, User } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../ui';
-import { comments as mockComments } from '../../data/ideas';
+import { fetchCommentsByIdea, insertComment } from '../../lib/supabase';
 
 export default function CommentSection({ ideaId }) {
-  const [comments, setComments] = useState(mockComments.filter(c => c.ideaId === ideaId));
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await fetchCommentsByIdea(ideaId);
+        setComments(data);
+      } catch (err) {
+        console.error('Failed to load comments:', err);
+      }
+    };
+    load();
+  }, [ideaId]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
 
-    const comment = {
-      id: Date.now(),
+    const commentData = {
       ideaId,
       userId: 999,
       userName: 'You',
@@ -23,8 +34,13 @@ export default function CommentSection({ ideaId }) {
       likes: 0,
     };
 
-    setComments([comment, ...comments]);
-    setNewComment('');
+    try {
+      const inserted = await insertComment(commentData);
+      setComments([inserted, ...comments]);
+      setNewComment('');
+    } catch (err) {
+      console.error('Failed to post comment:', err);
+    }
   };
 
   const formatTime = (timestamp) => {

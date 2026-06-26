@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   User,
@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { Button, Input, Select } from '../components/ui';
 import { useTheme } from '../context/ThemeContext';
-import { users } from '../data/ideas';
+import { fetchCurrentUser } from '../lib/supabase';
 
 const tabs = [
   { id: 'profile', label: 'Profile', icon: User },
@@ -32,15 +32,36 @@ const tabs = [
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
   const { darkMode, toggleDarkMode } = useTheme();
-  const user = users[0];
+  const [user, setUser] = useState(null);
 
   const [profile, setProfile] = useState({
-    name: user.name,
-    email: user.email,
-    bio: user.bio,
-    location: user.location,
+    name: '',
+    email: '',
+    bio: '',
+    location: '',
     website: '',
   });
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const userData = await fetchCurrentUser();
+        if (userData) {
+          setUser(userData);
+          setProfile({
+            name: userData.name || '',
+            email: userData.email || '',
+            bio: userData.bio || '',
+            location: userData.location || '',
+            website: '',
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load settings:', err);
+      }
+    };
+    load();
+  }, []);
 
   const [notifications, setNotifications] = useState({
     email: true,
@@ -109,8 +130,8 @@ export default function SettingsPage() {
                   <div className="flex items-center gap-6">
                     <div className="relative">
                       <img
-                        src={user.avatar}
-                        alt={user.name}
+                        src={user?.avatar}
+                        alt={user?.name}
                         className="w-20 h-20 rounded-full object-cover"
                       />
                       <button className="absolute bottom-0 right-0 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-primary-600 transition-colors">

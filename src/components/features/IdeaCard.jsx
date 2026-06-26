@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowUp, Users, Clock, Star } from 'lucide-react';
 import { Badge } from '../ui';
-import { categories, statuses, difficultyLevels } from '../../data/ideas';
+import { categories, statuses, difficultyLevels } from '../../lib/supabase';
 
 export default function IdeaCard({ idea, index = 0 }) {
   const category = categories.find(c => c.id === idea.category);

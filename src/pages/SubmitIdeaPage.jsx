@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CircleCheck as CheckCircle, ChevronRight, ChevronLeft, Lightbulb, Target, Users, Clock, Send } from 'lucide-react';
 import { Button, Input, Textarea, Select, Badge } from '../components/ui';
-import { categories, skills, difficultyLevels } from '../data/ideas';
+import { categories, skills, difficultyLevels, insertIdea, fetchCurrentUser } from '../lib/supabase';
 
 const steps = [
   { id: 1, title: 'Basic Info', icon: Lightbulb, description: 'Tell us about your idea' },
@@ -58,11 +58,26 @@ export default function SubmitIdeaPage() {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     } else {
-      setSubmitted(true);
+      try {
+        const currentUser = await fetchCurrentUser();
+        await insertIdea({
+          ...formData,
+          teamNeeded: parseInt(formData.teamNeeded) || 0,
+          votes: 0,
+          status: 'open',
+          applicants: 0,
+          ownerId: currentUser?.id || null,
+          createdAt: new Date().toISOString(),
+        });
+        setSubmitted(true);
+      } catch (err) {
+        console.error('Failed to submit idea:', err);
+        alert('Failed to submit idea. Please try again.');
+      }
     }
   };
 

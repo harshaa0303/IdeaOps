@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, ListFilter as Filter, SlidersHorizontal, Grid2x2 as Grid, List, X } from 'lucide-react';
 import { Button, Badge, SearchBar } from '../components/ui';
 import { IdeaCard } from '../components/features';
-import { ideas, categories, statuses, difficultyLevels } from '../data/ideas';
+import { fetchIdeas, categories, statuses, difficultyLevels } from '../lib/supabase';
 
 const sortOptions = [
   { value: 'votes', label: 'Most Voted' },
@@ -13,6 +13,7 @@ const sortOptions = [
 ];
 
 export default function ExplorePage() {
+  const [ideas, setIdeas] = useState([]);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
@@ -20,6 +21,18 @@ export default function ExplorePage() {
   const [sortBy, setSortBy] = useState('votes');
   const [viewMode, setViewMode] = useState('grid');
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await fetchIdeas();
+        setIdeas(data);
+      } catch (err) {
+        console.error('Failed to load ideas:', err);
+      }
+    };
+    load();
+  }, []);
 
   const filteredIdeas = useMemo(() => {
     let result = [...ideas];

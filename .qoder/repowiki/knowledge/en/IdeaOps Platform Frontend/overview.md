@@ -1,0 +1,1 @@
+A React-based single-page application for discovering, submitting, and collaborating on startup ideas with a Supabase backend.

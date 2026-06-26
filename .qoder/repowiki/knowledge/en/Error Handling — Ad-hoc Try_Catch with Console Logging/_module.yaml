@@ -1,0 +1,15 @@
+schema_version: 1
+module_path: error_handling
+title: Error Handling — Ad-hoc Try/Catch with Console Logging
+scope: []
+source_files:
+    - src/lib/supabase.js
+    - src/pages/ExplorePage.jsx
+    - src/pages/IdeaDetailsPage.jsx
+    - src/pages/SubmitIdeaPage.jsx
+    - src/components/features/CommentSection.jsx
+    - src/components/ui/Input.jsx
+    - src/components/ui/Textarea.jsx
+    - src/App.jsx
+depends_on: []
+related_to: []
